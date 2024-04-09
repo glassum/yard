@@ -1,100 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>yard</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@remix-run/router@1.13.1/dist/router.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-router@6.20.1/dist/umd/react-router.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-router-dom@6.20.1/dist/umd/react-router-dom.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.5/babel.min.js"></script>
-    <script src="yard.js"></script>
     <link rel="stylesheet" href="yard.css">
+    <script src="yard.js"></script>
 </head>
 <body>
-<div class="menu">
 
-    <div id="root"></div>
+<script type="module">
+    import "https://unpkg.com/preact";
+    import "https://unpkg.com/prop-types/prop-types.min.js";
+    import {html, Component, render} from "https://unpkg.com/htm/preact/standalone.module.js";
 
-    <script type="text/babel" data-presets="env,react">
-        const {createBrowserRouter, RouterProvider, Route, Link} = window.ReactRouterDOM;
-        const {useRoutes, useNavigate} = window.ReactRouter;
+    // Меняем цвет выбранного шара или ВСЕХ шаров, если ничего не выбрано
+    function setHue() {
+        let R = Number(document.getElementById("colorR").value);
+        let G = Number(document.getElementById("colorG").value);
+        let B = Number(document.getElementById("colorB").value);
+        console.log(currentId, ":", R, G, B);
+        balls
+            .filter(a => currentId == null || a.id === currentId)
+            .map(a => [a.colorR, a.colorG, a.colorB] = [R, G, B]);
+        document.getElementById("colorBox").style.background = "rgb(" + R + "," + G + "," + B + ")";
+    }
 
-        // Header component
-
-        function Header() {
-            const navigate = useNavigate();
-
-            return (
-                <header>
-                    <nav>
-                        <button onClick={() => navigate('/')}>Home (path is /)</button>
-                        &nbsp;
-                        <button onClick={() => navigate('/about')}>About Us (path is /about)</button>
-                    </nav>
-                </header>
-            );
+    class App extends Component {
+        open() {
+            document.getElementById("colorR").value = currentId == null ? 128 : balls[currentId].colorR;
+            document.getElementById("colorG").value = currentId == null ? 128 : balls[currentId].colorG;
+            document.getElementById("colorB").value = currentId == null ? 128 : balls[currentId].colorB;
+            document.querySelector("dialog").showModal();
+            setHue();
         }
 
-        // Footer component
-
-        function Footer() {
-            return (
-                <pre>Just view source this page and you will see all of the code there, easy to follow and learn</pre>
-            )
+        close() {
+            document.querySelector("dialog").close();
+            isModal = false;
+            currentId = null;
         }
 
-        // Home component
-
-        function Home() {
-            return (
-                <div>
-                    <Header/>
-                    <h1>Welcome to the Home Page!</h1>
-                    <p>This is the home page content.</p>
-                    {/* <Link to="about">About Us</Link> */}
-                    <Footer/>
-                </div>
-            );
+        range() {
+            setHue();
         }
 
-        // About component
-
-        function About() {
-            return (
-                <div>
-                    <Header/>
-                    <h1>About Us</h1>
-                    <p>This is the about page content.</p>
-                    {/* <Link to="/">Home</Link> */}
-                    <Footer/>
-                </div>
-            );
+        render({page}, {todos = []}, {id = currentId}) {
+            return html`
+                <button id="actionColor" onClick=${() => this.open()}>Изменить цвет</button>
+                <dialog onCancel={preventDefault}>
+                    <h2 id="colorBox">Выберите цвет</h2>
+                    <label>R</label>
+                    <input id="colorR" type="range" min="128" max="255" onChange=${() => this.range()}/>
+                    <label>G</label>
+                    <input id="colorG" type="range" min="128" max="255" onChange=${() => this.range()}/>
+                    <label>B</label>
+                    <input id="colorB" type="range" min="128" max="255" onChange=${() => this.range()}/>
+                    <button type="button" onClick=${() => this.close()}>Закрыть</button>
+                </dialog>
+            `;
         }
+    }
 
-        const router = createBrowserRouter([
-                {path: '/', element: <Home/>},
-                {path: '/about', element: <About/>},
-            ]
-        );
+    render(html`
+        <${App} page="All"/>
+    `, document.body);
+</script>
 
-        // Render the router
-
-        ReactDOM.render(<RouterProvider router={router}/>, document.getElementById('root'));
-    </script>
-
-    <label>Пауза</label>
-    <input type="button" id="pause" class="pause"/>
-    <label>Стоп</label>
-    <input type="button" id="stop"/>
-    <label>Итерация</label>
-    <input type="text" id="generation" disabled>
-    <label>Время итерации, мс</label>
-    <input type="text" id="time" disabled>
-
-</div>
+<button></button>
+<button id="actionRandom">Случайный расклад</button>
+<button id="actionStop">Обнулить скорости</button>
+<button id="actionPause">Пауза</button>
+<label>Итерация</label>
+<input type="text" id="generation" disabled>
+<label>Время итерации, мс</label>
+<input type="text" id="time" disabled>
 <canvas id="canvas"></canvas>
+
 </body>
 </html>

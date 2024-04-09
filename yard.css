@@ -1,13 +1,16 @@
-body { margin:0; padding:0; font-family:Verdana; font-size: 1rem;  }
-canvas { background:#000; border:1px solid #888; margin:0; padding:0; }
-.menu { width:11rem; float:left; padding:0.25rem 0 0 0.25rem; }
-h4 { margin:0.25rem 0; font-weight:normal; }
-label { display:block; }
+body { margin:0; padding:0 0.5rem; font-family:Verdana; font-size: 1rem;  }
+canvas { position: absolute;top:0; right:0; background:#000; border:1px solid #888; margin:0; padding:0; }
 
-select { width:10.4rem; border-radius:0.25rem; margin-bottom:0.5rem; font-size:1rem; }
-input { width:10rem; margin:0 0 0.5rem;  border-radius:0.25rem; border:1px solid #AAA; text-align:right; }
-input[type="range"] { width:10.25rem; }
-input[type="button"]{ width:10.35rem; }
-input[type="button"]:hover { background:#DDD; border:1px solid #333; }
-input[type="button"].pause { background:#0060DF; }
-input[type="button"].active { background:darkred; }
+label, button, input { display:block; font-size:1rem;  border-radius:0.25rem; }
+label, button { margin-top:0.5rem; }
+input { width:10.35rem; border:1px solid; text-align:right; }
+button { width:10.75rem; border:1px solid #333; }
+button:hover { background:#DDD;  }
+button.pause { background:#0060DF; color:#FFF; }
+button.active { background:crimson; }
+
+dialog { background:#000; border:1px solid #FFF; border-radius:0.25rem; }
+dialog label { color:#FFF; }
+dialog h2 { margin:0; border-radius:0.25rem; padding:0.2rem 0.5rem 0.4rem; }
+dialog button { width:100%; margin-left:0; }
+dialog input { width:100%; border:none; margin:0; }
